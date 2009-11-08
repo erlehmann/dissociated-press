@@ -37,28 +37,6 @@ class word:
         """Gets a dictionary with all possible successors to this word and how often they occured as such."""
         return self.nextWordsDict
 
-    def addPosition(self, position):
-        """Adds to this word a possible position inside a sentence."""
-        if position not in self.positionsDict:
-            self.positionsDict[position] = 1
-        else:
-            self.positionsDict[position] += 1
-
-    def getPositions(self):
-        """Gets all possible positions of this Word inside a sentence."""
-        return self.positionsDict.keys()
-
-    def getPositionsDict(self):
-        """Gets a dictionary with all possible positions of this Word inside a sentence and how often they occured."""
-        return self.positionsDict
-
-    def getPopularity(self):
-        """Gets how popular this word is used based on popularity of positions inside a sentence."""
-        popularity = 0
-        for v in self.getPositionsDict().values():
-            popularity += v
-        return popularity
-
     def getValue(self):
         return self.value
 
@@ -85,19 +63,16 @@ class dictionary:
     def __getitem__(self, index):
         return self.wordList[index]
 
-    def addWord(self, word, position=None):
-        """Adds a word to the dictionary, optionally with position inside a sentence."""
+    def addWord(self, word):
+        """Adds a word to the dictionary."""
         # if word is not in dictionary, add it
         if not str(word) in self:
             self.wordList.append(word)
-        # if a position is given, add it
-        if position != None:
-            self.getWord(str(word)).addPosition(position)
 
-    def addWordPair(self, word, nextWord, position=None):
-        """Adds a word pair to the dictionary, optionally with position of the first word inside a sentence."""
-        self.addWord(word, position)
-        self.addWord(nextWord, position+1)
+    def addWordPair(self, word, nextWord):
+        """Adds a word pair to the dictionary."""
+        self.addWord(word)
+        self.addWord(nextWord)
         # add nextWord to the appropriate list of word if it is not there yet
         for k in self.getWord(str(word)).getNextWords():
             if str(k) == str(nextWord):
@@ -118,33 +93,23 @@ class dictionary:
         # get a word that can stand at the beginning.
         self.startWords = []
         for w in self.wordList:
-            if 0 in w.getPositions():
-                self.startWords.append(w)
+            self.startWords.append(w)
         self.currentWord = choice(self.startWords)
         self.sentence = str(self.currentWord)
 
         # add more words
         # FIXME: does not work as intended
-        for i in range(self.getMaxSentenceLength())[1:]: # cut off the zeroest element
-            self.addWords = []
-            for w in self.getWordList():
-                if w in self.currentWord.getNextWords():
-                    if i in w.getPositions():
-                        self.addWords.append(w)
-            try:
-                self.currentWord = choice(self.addWords)                
-                self.sentence += " " + str(self.currentWord)
-            except IndexError: # list empty, sentence ends naturally
-                return self.sentence
+        self.addWords = []
+        for w in self.getWordList():
+            if w in self.currentWord.getNextWords():
+                self.addWords.append(w)
+        try:
+            self.currentWord = choice(self.addWords)                
+            self.sentence += " " + str(self.currentWord)
+        except IndexError: # list empty, sentence ends naturally
+            return self.sentence
         # longest sentence possible
         return self.sentence
-
-    def getMaxSentenceLength(self):
-        l = 0
-        for w in self.wordList:
-            if max(w.getPositions()) > l:
-                l = max(w.getPositions())
-        return l + 1
 
 class sentence:
     def __init__(self, string):
@@ -166,9 +131,9 @@ class sentence:
             try:
                 currentWord = word(self.tokenList[i])
                 currentNextWord = word(self.tokenList[i+1])
-                dictionary.addWordPair(currentWord, currentNextWord, position=i)
+                dictionary.addWordPair(currentWord, currentNextWord)
             except IndexError:
-                dictionary.addWord(currentWord, position=i)
+                dictionary.addWord(currentWord)
                 print "Sentence dissociated."
                 pass
 
