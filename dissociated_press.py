@@ -7,157 +7,160 @@ from time import sleep
 
 class word:
     def __init__(self, value=""):
-        self.nextWordsDict = {}
-        self.positionsDict = {}
+        """
+        A word saves what precedes and what follows itself.
+        It also knows its position inside a sentence.
+        """
+
+        # this list holds sentence fragments occuring after this word
+        # imagine the word being before the list
+        self.nextFragments = []
+
+        # this list holds sentence fragments occuring before this word
+        # imagine the word being after the list
+        self.prevFragments = []
+
+        # keys are possible positions in sentences
+        # values are how often the word occurred
+        self.positions = {}
+
         self.value = value
 
     def __repr__(self):
-        self.repr = ""
-        self.repr += self.value + " -> "
-        for w in self.getNextWords():
-            self.repr +=  str(w) + " "
-        self.repr += str(self.positionsDict.keys()) + "\n"
-        return self.repr
+        return self.value + str(self.positions.keys())
 
     def __str__(self):
         return self.value
 
-    def addNextWord(self, nextWord):
-        """Adds to this word a possible successor."""
-        if nextWord not in self.nextWordsDict:
-            self.nextWordsDict[nextWord] = 1
-        else:
-            self.nextWordsDict[nextWord] += 1
+    def addNextFragments(self, nextWords=[]):
+        """Adds fragments following this word."""
+        self.nextFragments.append(nextWords)
 
-    def getNextWords(self):
-        """Gets all possible successors to this word."""
-        return self.nextWordsDict.keys()
+    def addPrevFragments(self, prevWords=[]):
+        """Adds fragments preceding this word."""
+        self.prevFragments.append(prevWords)
 
-    def getNextWordsDict(self):
-        """Gets a dictionary with all possible successors to this word and how often they occured as such."""
-        return self.nextWordsDict
+    def getNextFragments(self, count=1):
+        """Gets Fragments following this word up to a specific depth."""
+        fragments = []
+        for f in self.nextFragments:
+            fragments.append(f[:count])
+        return fragments
 
-    def getValue(self):
-        return self.value
+    def getPrevFragments(self, count=1):
+        """Gets Fragments preceding this word up to a specific depth."""
+        fragments = []
+        for f in self.nextFragments:
+            fragments.append(f[-count:])
+        return fragments
 
-class dictionary:
-    def __init__(self):
-        self.wordList = []
+    def getNextRandomFragment(self, count=1):
+        randomFragment = choice(self.nextFragments)
+        return randomFragment[:count]
 
-    def __repr__(self):
-        self.repr = ""
-        for w in self.wordList:
-            self.repr += str(w).ljust(15) + " -> "
-            self.repr += str(w.getPositions()).ljust(15) + " -> "
-            for x in w.getNextWords():
-                self.repr += str(x) + " "
-            self.repr += "\n"
-        return self.repr
+    def getPrevRandomFragment(self, count=1):
+        randomFragment = choice(self.prevFragments)
+        return randomFragment[-count:]
 
-    def __contains__(self, word):
-        for w in self.wordList:
-            if w.getValue() == word:
-                return True
-        return False
-
-    def __getitem__(self, index):
-        return self.wordList[index]
-
-    def addWord(self, word):
-        """Adds a word to the dictionary."""
-        # if word is not in dictionary, add it
-        if not str(word) in self:
-            self.wordList.append(word)
-
-    def addWordPair(self, word, nextWord):
-        """Adds a word pair to the dictionary."""
-        self.addWord(word)
-        self.addWord(nextWord)
-        # add nextWord to the appropriate list of word if it is not there yet
-        for k in self.getWord(str(word)).getNextWords():
-            if str(k) == str(nextWord):
-                return
-        self.getWord(str(word)).addNextWord(nextWord)
-
-    def getWord(self, word):
-        for w in self.wordList:
-            if w.getValue() == word:
-                return w
-        return None
-
-    def getWordList(self):
-        return self.wordList
-
-    def associate(self):
-        """Create a sentence from this Dissociated Press dictionary."""
-        # get a word that can stand at the beginning.
-        self.startWords = []
-        for w in self.wordList:
-            self.startWords.append(w)
-        self.currentWord = choice(self.startWords)
-        self.sentence = str(self.currentWord)
-
-        # add more words
-        # FIXME: does not work as intended
-        self.addWords = []
-        for w in self.getWordList():
-            if w in self.currentWord.getNextWords():
-                self.addWords.append(w)
+    def addPosition(self, position):
         try:
-            self.currentWord = choice(self.addWords)                
-            self.sentence += " " + str(self.currentWord)
-        except IndexError: # list empty, sentence ends naturally
-            return self.sentence
-        # longest sentence possible
-        return self.sentence
+            self.positions[position] += 1
+        except KeyError:
+            self.positions[position] = 1
+
+    def getPositions(self):
+        return self.positions
 
 class sentence:
-    def __init__(self, string):
-        self.value = string.lstrip()
-        self.tokenList = self.value.split(" ")
+    def __init__(self, string, separator=" "):
+        """A sentence is basically a glorified list of tokens."""
+        self.value = string
+        self.separator = separator
+        self.tokens = self.value.split(self.separator)
 
     def __repr__(self):
         repr = ""
-        for t in self.tokenList:
-            repr += t + " "
+        for t in self.tokens[:-1]:
+            repr += t + self.separator
+        # the last element does not need to be followed by a separator
+        repr += self.tokens[-1]
         return repr
 
     def __str__(self):
         return self.value
 
-    def dissociate(self, dictionary):
-        """Feed this sentence to a target Dissociated Press dictionary."""
-        for i,t in enumerate(self.tokenList):
+    # sentences are iterable
+    def __getitem__(self, index):
+        return self.tokens[index]
+
+    def __len__(self):
+        return len(self.tokens)
+
+class dictionary:
+    def __init__(self):
+        """
+        A Dissociated Press dictionary contains a python dictionary of words.
+        Sentences can be associated into or out of it.
+        """
+        self.words = {}
+
+    def __repr__(self):
+        return str(self.words)
+
+    def __getitem__(self, key):
+        return self.words[key]
+
+    def getWordsAtPosition(self, position):
+        """Get all words that may occur at one position."""
+        wordsAtPosition = []
+        for w in self.words:
+            if position in self.words[w].getPositions().keys():
+                wordsAtPosition.append(w)
+        return wordsAtPosition
+
+    def dissociate(self, sentence):
+        """Dissociate a sentence into this dictionary."""
+        for i, token in enumerate(sentence):
+
+            if token not in self.words.keys():
+                w = self.words[token] = word(token)
+            else:
+                w = self.words[token]
+
+            w.addNextFragments(sentence[i+1:])
+            w.addPrevFragments(sentence[:i])
+            w.addPosition(i)
+
+    def associate(self, depth=1, separator=" "):
+        """Associate a sentence from the dictionary."""
+        # TODO: depth parameter not used yet
+        # we need a first word
+        blurb = ""
+
+        w = choice(self.getWordsAtPosition(0))
+        while w:
+            print w
             try:
-                currentWord = word(self.tokenList[i])
-                currentNextWord = word(self.tokenList[i+1])
-                dictionary.addWordPair(currentWord, currentNextWord)
+                blurb += separator + w
+                w = self.words[w].getNextRandomFragment()[0]
+            # unclear when IndexError occurs
             except IndexError:
-                dictionary.addWord(currentWord)
-                print "Sentence dissociated."
-                pass
+                return blurb
 
-    def isWellFormed(self):
-        s = self.value
-        if s.count("(") == s.count(")"):
-            return True
-        return False
-    
-
-if __name__ == '__main__':
-    dict = dictionary()
-    while 1:
-        s = stdin.readline()
-        if s == "": break
-        s = s[:-1] + " " # cut of the last char "\n", insert space
-        for t in s.split(". "): # ugly hack
-            sentence(t).dissociate(dict)
-        #p = sentence(s[:-1]) # cut of the last char "\n"
-        #p.dissociate(dict)
-    print "=== Dissociated Press ==="
-    try:
-        while 1:
-            print dict.associate()
-            sleep(1)
-    except KeyboardInterrupt:
-        print "=== Enough! ==="
+#if __name__ == '__main__':
+    #dict = dictionary()
+    #while 1:
+        #s = stdin.readline()
+        #if s == "": break
+        #s = s[:-1] + " " # cut of the last char "\n", insert space
+        #for t in s.split(". "): # ugly hack
+            #sentence(t).dissociate(dict)
+        ##p = sentence(s[:-1]) # cut of the last char "\n"
+        ##p.dissociate(dict)
+    #print "=== Dissociated Press ==="
+    #try:
+        #while 1:
+            #print dict.associate()
+            #sleep(1)
+    #except KeyboardInterrupt:
+        #print "=== Enough! ==="

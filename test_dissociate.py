@@ -1,19 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import dissociated_press as d
+import dissociated_press as dp
 
-s = d.sentence("Der behandschuhte Mann haut ein Kind.")
-t = d.sentence("Der Mann kotzt.")
-u = d.sentence("Ein Kind kotzt.")
-v = d.sentence("")
+s = dp.sentence("der große mann haut ein kind.")
+t = dp.sentence("ein mann kotzt.")
+u = dp.sentence("da ist ein kind.")
+v = dp.sentence("der große baum fällt auf ein kind.")
 
-dict = d.dictionary()
+d = dp.dictionary()
 
-s.dissociate(dict)
-t.dissociate(dict)
-u.dissociate(dict)
-v.dissociate(dict)
+d.dissociate(s)
+d.dissociate(t)
+d.dissociate(u)
+d.dissociate(v)
 
-for i in range(0,20):
-    print dict.associate()
+#for i in range(0,20):
+#    print dict.associate()
