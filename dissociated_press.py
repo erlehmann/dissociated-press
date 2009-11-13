@@ -71,31 +71,6 @@ class word:
     def getPositions(self):
         return self.positions
 
-class sentence:
-    def __init__(self, string, separator=" "):
-        """A sentence is basically a glorified list of tokens."""
-        self.value = string
-        self.separator = separator
-        self.tokens = self.value.split(self.separator)
-
-    def __repr__(self):
-        repr = ""
-        for t in self.tokens[:-1]:
-            repr += t + self.separator
-        # the last element does not need to be followed by a separator
-        repr += self.tokens[-1]
-        return repr
-
-    def __str__(self):
-        return self.value
-
-    # sentences are iterable
-    def __getitem__(self, index):
-        return self.tokens[index]
-
-    def __len__(self):
-        return len(self.tokens)
-
 class dictionary:
     def __init__(self):
         """
@@ -118,34 +93,35 @@ class dictionary:
                 wordsAtPosition.append(w)
         return wordsAtPosition
 
-    def dissociate(self, sentence):
+    def dissociate(self, string, separator=" "):
         """Dissociate a sentence into this dictionary."""
-        for i, token in enumerate(sentence):
+        self.sentence = string.split(separator)
+        for i, token in enumerate(self.sentence):
 
             if token not in self.words.keys():
                 w = self.words[token] = word(token)
             else:
                 w = self.words[token]
 
-            w.addNextFragments(sentence[i+1:])
-            w.addPrevFragments(sentence[:i])
+            w.addNextFragments(self.sentence[i+1:])
+            w.addPrevFragments(self.sentence[:i])
             w.addPosition(i)
 
-    def associate(self, depth=1, separator=" "):
+    def associate(self, separator=" "):
         """Associate a sentence from the dictionary."""
         # TODO: depth parameter not used yet
         # we need a first word
-        blurb = ""
+        self.sentence = ""
 
         w = choice(self.getWordsAtPosition(0))
         while w:
             print w
             try:
-                blurb += separator + w
+                self.sentence += separator + w
                 w = self.words[w].getNextRandomFragment()[0]
             # unclear when IndexError occurs
             except IndexError:
-                return blurb
+                return self.sentence
 
 #if __name__ == '__main__':
     #dict = dictionary()

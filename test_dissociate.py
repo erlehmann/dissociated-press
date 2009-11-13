@@ -3,17 +3,12 @@
 
 import dissociated_press as dp
 
-s = dp.sentence("der große mann haut ein kind.")
-t = dp.sentence("ein mann kotzt.")
-u = dp.sentence("da ist ein kind.")
-v = dp.sentence("der große baum fällt auf ein kind.")
-
 d = dp.dictionary()
 
-d.dissociate(s)
-d.dissociate(t)
-d.dissociate(u)
-d.dissociate(v)
+d.dissociate("der große mann haut ein kind.")
+d.dissociate("ein mann kotzt.")
+d.dissociate("da ist ein kind.")
+d.dissociate("der große baum fällt auf ein kind.")
 
-#for i in range(0,20):
-#    print dict.associate()
+for i in range(0,20):
+    print d.associate()
