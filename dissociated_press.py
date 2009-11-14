@@ -21,7 +21,7 @@ class word:
         self.prevFragments = []
 
         # keys are possible positions in sentences
-        # values are how often the word occurred
+        # values hold how often the word occurred
         self.positions = {}
 
         self.value = value
@@ -69,7 +69,7 @@ class dictionary:
     def __init__(self):
         """
         A Dissociated Press dictionary contains a python dictionary of words.
-        Sentences can be associated into or out of it.
+        Sentences (strings) can be associated into or out of it.
         """
         self.words = {}
 
@@ -131,8 +131,7 @@ class dictionary:
             try:
                 self.sentence += separator + w
                 w = self.words[w].getNextRandomFragment()
-            # unclear when IndexError occurs
-            except IndexError:
+            except IndexError: # occurs when looking up an empty word
                 return self.sentence
 
 if __name__ == '__main__':
