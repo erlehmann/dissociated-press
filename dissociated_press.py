@@ -102,21 +102,19 @@ class dictionary:
             else:
                 w = self.words[token]
 
-            print sentence[i], i
-
-            try:
+            if i > 0:
                 print sentence[i-1]
-            except IndexError:
-                print "LOL ERROR"
+                w.addPrevFragment(sentence[i-1])
+            else:
+                print "START -- "
 
-            try:
+            print sentence[i], " @" , i
+
+            if (i+1) < len(sentence):
                 print sentence[i+1]
-            except IndexError:
-                print "LOL ERROR"
-
-            # w.addNextFragment(sentence[i+1])
-
-            # w.addPrevFragment(sentence[i-1])
+                w.addNextFragment(sentence[i+1])
+            else:
+                print " -- ENDE"
 
             w.addPosition(i)
 
@@ -131,7 +129,7 @@ class dictionary:
             print w
             try:
                 self.sentence += separator + w
-                w = self.words[w].getNextRandomFragment()[0]
+                w = self.words[w].getNextRandomFragment()
             # unclear when IndexError occurs
             except IndexError:
                 return self.sentence
