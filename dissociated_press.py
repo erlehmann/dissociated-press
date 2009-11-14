@@ -126,7 +126,8 @@ class dictionary:
 
         w = choice(self.getWordsAtPosition(0))
         while w:
-            print w
+            print w,
+
             try:
                 self.sentence += separator + w
                 w = self.words[w].getNextRandomFragment()
