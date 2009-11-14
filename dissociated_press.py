@@ -103,18 +103,18 @@ class dictionary:
                 w = self.words[token]
 
             if i > 0:
-                print sentence[i-1]
+                print sentence[i-1],
                 w.addPrevFragment(sentence[i-1])
             else:
-                print "START -- "
+                print "@ START",
 
-            print sentence[i], " @" , i
+            print "->", sentence[i], "@", i, "->",
 
             if (i+1) < len(sentence):
                 print sentence[i+1]
                 w.addNextFragment(sentence[i+1])
             else:
-                print " -- ENDE"
+                print "@ ENDE"
 
             w.addPosition(i)
 
