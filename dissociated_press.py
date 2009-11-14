@@ -134,20 +134,24 @@ class dictionary:
             except IndexError:
                 return self.sentence
 
-#if __name__ == '__main__':
-    #dict = dictionary()
-    #while 1:
-        #s = stdin.readline()
-        #if s == "": break
-        #s = s[:-1] + " " # cut of the last char "\n", insert space
-        #for t in s.split(". "): # ugly hack
-            #sentence(t).dissociate(dict)
-        ##p = sentence(s[:-1]) # cut of the last char "\n"
-        ##p.dissociate(dict)
-    #print "=== Dissociated Press ==="
-    #try:
-        #while 1:
-            #print dict.associate()
-            #sleep(1)
-    #except KeyboardInterrupt:
-        #print "=== Enough! ==="
+if __name__ == '__main__':
+    d = dictionary()
+
+    while 1:
+        i = stdin.readline()[:-1] # cut off last char "\n"
+
+        if i == "":
+            break
+
+        for sentence in i.split(". "): # ugly hack
+            d.dissociate(sentence)
+
+    print "=== Dissociated Press ==="
+
+    try:
+        while 1:
+            print d.associate()
+            sleep(1)
+
+    except KeyboardInterrupt:
+        print "=== Enough! ==="
