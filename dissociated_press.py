@@ -12,13 +12,13 @@ class word:
         It also knows its position inside a sentence.
         """
 
-        # this list holds sentence fragments occuring after this word
+        # this list holds sentence Fragment occuring after this word
         # imagine the word being before the list
-        self.nextFragments = []
+        self.nextFragment = []
 
-        # this list holds sentence fragments occuring before this word
+        # this list holds sentence Fragment occuring before this word
         # imagine the word being after the list
-        self.prevFragments = []
+        self.prevFragment = []
 
         # keys are possible positions in sentences
         # values are how often the word occurred
@@ -32,34 +32,34 @@ class word:
     def __str__(self):
         return self.value
 
-    def addNextFragments(self, nextWords=[]):
-        """Adds fragments following this word."""
-        self.nextFragments.append(nextWords)
+    def addNextFragment(self, nextWords=[]):
+        """Adds Fragment following this word."""
+        self.nextFragment.append(nextWords)
 
-    def addPrevFragments(self, prevWords=[]):
-        """Adds fragments preceding this word."""
-        self.prevFragments.append(prevWords)
+    def addPrevFragment(self, prevWords=[]):
+        """Adds Fragment preceding this word."""
+        self.prevFragment.append(prevWords)
 
-    def getNextFragments(self, count=1):
-        """Gets Fragments following this word up to a specific depth."""
-        fragments = []
-        for f in self.nextFragments:
-            fragments.append(f[:count])
-        return fragments
+    def getNextFragment(self, count=1):
+        """Gets Fragment following this word up to a specific depth."""
+        Fragment = []
+        for f in self.nextFragment:
+            Fragment.append(f[:count])
+        return Fragment
 
-    def getPrevFragments(self, count=1):
-        """Gets Fragments preceding this word up to a specific depth."""
-        fragments = []
-        for f in self.nextFragments:
-            fragments.append(f[-count:])
-        return fragments
+    def getPrevFragment(self, count=1):
+        """Gets Fragment preceding this word up to a specific depth."""
+        Fragment = []
+        for f in self.nextFragment:
+            Fragment.append(f[-count:])
+        return Fragment
 
     def getNextRandomFragment(self, count=1):
-        randomFragment = choice(self.nextFragments)
+        randomFragment = choice(self.nextFragment)
         return randomFragment[:count]
 
     def getPrevRandomFragment(self, count=1):
-        randomFragment = choice(self.prevFragments)
+        randomFragment = choice(self.prevFragment)
         return randomFragment[-count:]
 
     def addPosition(self, position):
@@ -103,8 +103,8 @@ class dictionary:
             else:
                 w = self.words[token]
 
-            w.addNextFragments(self.sentence[i+1:])
-            w.addPrevFragments(self.sentence[:i])
+            w.addNextFragment(self.sentence[i+1:])
+            w.addPrevFragment(self.sentence[:i])
             w.addPosition(i)
 
     def associate(self, separator=" "):
