@@ -12,13 +12,13 @@ class word:
         It also knows its position inside a sentence.
         """
 
-        # this list holds sentence Fragment occuring after this word
+        # this list holds sentence fragments occuring after this word
         # imagine the word being before the list
-        self.nextFragment = []
+        self.nextFragments = []
 
-        # this list holds sentence Fragment occuring before this word
+        # this list holds sentence fragments occuring before this word
         # imagine the word being after the list
-        self.prevFragment = []
+        self.prevFragments = []
 
         # keys are possible positions in sentences
         # values are how often the word occurred
@@ -32,35 +32,29 @@ class word:
     def __str__(self):
         return self.value
 
-    def addNextFragment(self, nextWords=[]):
+    def addNextFragment(self, nextWord):
         """Adds Fragment following this word."""
-        self.nextFragment.append(nextWords)
+        self.nextFragments.append(nextWord)
 
-    def addPrevFragment(self, prevWords=[]):
+    def addPrevFragment(self, prevWord):
         """Adds Fragment preceding this word."""
-        self.prevFragment.append(prevWords)
+        self.prevFragments.append(prevWord)
 
-    def getNextFragment(self, count=1):
-        """Gets Fragment following this word up to a specific depth."""
-        Fragment = []
-        for f in self.nextFragment:
-            Fragment.append(f[:count])
-        return Fragment
+    def getNextFragments(self):
+        """Gets all Fragments following this word."""
+        return self.nextFragments
 
     def getPrevFragment(self, count=1):
-        """Gets Fragment preceding this word up to a specific depth."""
-        Fragment = []
-        for f in self.nextFragment:
-            Fragment.append(f[-count:])
-        return Fragment
+        """Gets Fragments preceding this word."""
+        return self.prevFragments
 
     def getNextRandomFragment(self, count=1):
-        randomFragment = choice(self.nextFragment)
-        return randomFragment[:count]
+        randomFragment = choice(self.nextFragments)
+        return randomFragment
 
     def getPrevRandomFragment(self, count=1):
-        randomFragment = choice(self.prevFragment)
-        return randomFragment[-count:]
+        randomFragment = choice(self.prevFragments)
+        return randomFragment
 
     def addPosition(self, position):
         try:
