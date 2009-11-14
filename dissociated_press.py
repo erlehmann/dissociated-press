@@ -44,15 +44,15 @@ class word:
         """Gets all Fragments following this word."""
         return self.nextFragments
 
-    def getPrevFragment(self, count=1):
+    def getPrevFragments(self):
         """Gets Fragments preceding this word."""
         return self.prevFragments
 
-    def getNextRandomFragment(self, count=1):
+    def getNextRandomFragment(self):
         randomFragment = choice(self.nextFragments)
         return randomFragment
 
-    def getPrevRandomFragment(self, count=1):
+    def getPrevRandomFragment(self):
         randomFragment = choice(self.prevFragments)
         return randomFragment
 
@@ -81,24 +81,43 @@ class dictionary:
 
     def getWordsAtPosition(self, position):
         """Get all words that may occur at one position."""
+
         wordsAtPosition = []
+
         for w in self.words:
             if position in self.words[w].getPositions().keys():
                 wordsAtPosition.append(w)
+
         return wordsAtPosition
 
     def dissociate(self, string, separator=" "):
         """Dissociate a sentence into this dictionary."""
-        self.sentence = string.split(separator)
-        for i, token in enumerate(self.sentence):
+
+        sentence = string.split(separator)
+
+        for i, token in enumerate(sentence):
 
             if token not in self.words.keys():
                 w = self.words[token] = word(token)
             else:
                 w = self.words[token]
 
-            w.addNextFragment(self.sentence[i+1:])
-            w.addPrevFragment(self.sentence[:i])
+            print sentence[i], i
+
+            try:
+                print sentence[i-1]
+            except IndexError:
+                print "LOL ERROR"
+
+            try:
+                print sentence[i+1]
+            except IndexError:
+                print "LOL ERROR"
+
+            # w.addNextFragment(sentence[i+1])
+
+            # w.addPrevFragment(sentence[i-1])
+
             w.addPosition(i)
 
     def associate(self, separator=" "):
