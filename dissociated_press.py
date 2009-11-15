@@ -90,10 +90,26 @@ class dictionary:
 
         return wordsAtPosition
 
-    def dissociate(self, string, separator=" "):
-        """Dissociate a sentence into this dictionary."""
+    def dissociate(self, string, separator=" ", N=1):
+        """
+        Dissociate a sentence into this dictionary.
+        N tells how many words are fused back together.
+        """
 
         sentence = string.split(separator)
+
+        # pad list with empty elements
+        rest = len(sentence) % N
+
+        for i in range(N-rest):
+            sentence.append("")
+
+        # fuse words into parts of N size each
+        # kudos to Ronny Pfannschmidt for figuring this out
+        sentence = [separator.join(x) for x in zip(*[iter(sentence)]*N)]
+
+        # remove erroneous separators introduced through padding
+        sentence[-1] = sentence[-1].rstrip()
 
         for i, token in enumerate(sentence):
 
