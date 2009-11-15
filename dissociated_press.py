@@ -66,12 +66,13 @@ class word:
         return self.positions
 
 class dictionary:
-    def __init__(self):
+    def __init__(self, debug=False):
         """
         A Dissociated Press dictionary contains a python dictionary of words.
         Sentences (strings) can be associated into or out of it.
         """
         self.words = {}
+        self.debug = debug
 
     def __repr__(self):
         return str(self.words)
@@ -119,18 +120,23 @@ class dictionary:
                 w = self.words[token]
 
             if i > 0:
-                print sentence[i-1],
+                if self.debug:
+                    print sentence[i-1],
                 w.addPrevFragment(sentence[i-1])
             else:
-                print "@ START",
+                if self.debug:
+                    print "@ START",
 
-            print "->", sentence[i], "@", i, "->",
+            if self.debug:
+                print "->", sentence[i], "@", i, "->",
 
             if (i+1) < len(sentence):
-                print sentence[i+1]
+                if self.debug:
+                    print sentence[i+1]
                 w.addNextFragment(sentence[i+1])
             else:
-                print "@ ENDE"
+                if self.debug:
+                    print "@ ENDE"
 
             w.addPosition(i)
 

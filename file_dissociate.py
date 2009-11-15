@@ -4,12 +4,15 @@
 import dissociated_press as dp
 from time import sleep
 
-d = dp.dictionary()
+DEBUG = True
+
+d = dp.dictionary(debug=DEBUG)
 f = open("TESTDATA","r")
 input = f.readlines()
 
 for l in input:
-    print l
+    if DEBUG:
+        print l
     d.dissociate(l)
 
 try:
