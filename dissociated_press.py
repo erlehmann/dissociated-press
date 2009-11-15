@@ -136,7 +136,7 @@ class dictionary:
 
     def associate(self, separator=" "):
         """Associate a sentence from the dictionary."""
-        # TODO: depth parameter not used yet
+
         # we need a first word
         self.sentence = ""
 
