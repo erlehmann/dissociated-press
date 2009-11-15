@@ -141,14 +141,18 @@ class dictionary:
         self.sentence = ""
 
         w = choice(self.getWordsAtPosition(0))
+        self.sentence += w
+        
         while w:
-            print w,
 
             try:
-                self.sentence += separator + w
+                # print self.sentence, w
                 w = self.words[w].getNextRandomFragment()
+                self.sentence += separator + w
             except IndexError: # occurs when looking up an empty word
-                return self.sentence
+                pass
+
+        return self.sentence
 
 if __name__ == '__main__':
     d = dictionary()
