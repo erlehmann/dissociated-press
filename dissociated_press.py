@@ -114,7 +114,7 @@ class dictionary:
 
         for i, token in enumerate(sentence):
 
-            if token not in self.words.keys():
+            if token not in self.words:
                 w = self.words[token] = word(token)
             else:
                 w = self.words[token]
