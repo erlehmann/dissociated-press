@@ -167,12 +167,15 @@ class dictionary:
 
 if __name__ == '__main__':
     d = dictionary()
+    input = []
 
     while 1:
         i = stdin.readline()[:-1] # cut off last char "\n"
 
         if i == "":
             break
+
+        input.append(i)
 
         for sentence in i.split(". "): # ugly hack
             d.dissociate(sentence)
@@ -181,8 +184,12 @@ if __name__ == '__main__':
 
     try:
         while 1:
-            print d.associate()
-            sleep(1)
-
+            sentence = d.associate()
+    
+            if sentence not in input:
+                print sentence
+                sleep(1)
+    
     except KeyboardInterrupt:
         print "=== Enough! ==="
+    
