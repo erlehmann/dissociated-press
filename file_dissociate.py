@@ -8,8 +8,10 @@ DEBUG = False
 N = 2
 
 d = dp.dictionary(debug=DEBUG)
+
 f = open("PLOMDATA","r")
 input = f.readlines()
+f.close()
 
 for i, l in enumerate(input):
     if DEBUG:
@@ -28,5 +30,3 @@ try:
 
 except KeyboardInterrupt:
     print "=== Enough! ==="
-
-f.close()
