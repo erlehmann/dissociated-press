@@ -4,16 +4,19 @@
 import dissociated_press as dp
 from time import sleep
 
-DEBUG = True
+DEBUG = False
+N = 2
 
 d = dp.dictionary(debug=DEBUG)
-f = open("TESTDATA","r")
+f = open("PLOMDATA","r")
 input = f.readlines()
 
-for l in input:
+for i, l in enumerate(input):
     if DEBUG:
         print l
-    d.dissociate(l)
+    d.dissociate(l, N=N)
+    if i%100 == 0:
+        print i
 
 try:
     while 1:
