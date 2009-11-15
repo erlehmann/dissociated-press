@@ -142,13 +142,12 @@ class dictionary:
 
         w = choice(self.getWordsAtPosition(0))
         self.sentence += w
-        
-        while w:
 
+        while w:
+            # print self.sentence, w
             try:
-                # print self.sentence, w
                 w = self.words[w].getNextRandomFragment()
-                self.sentence += separator + w
+                if w: self.sentence += separator + w
             except IndexError: # occurs when looking up an empty word
                 pass
 
