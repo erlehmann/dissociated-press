@@ -24,6 +24,10 @@ try:
     while 1:
         sentence = d.associate()
 
+        # fix line endings (why exactly does this occur ?)
+        if not sentence.endswith("\n"):
+            sentence = sentence + "\n"
+
         if sentence not in input:
             print sentence
             sleep(1)
