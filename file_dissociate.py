@@ -3,13 +3,18 @@
 
 import dissociated_press as dp
 from time import sleep
+from sys import argv
+
+if len(argv) == 1:
+    infile = "PLOMDATA"
+else:
+    infile = argv[1]
 
 DEBUG = False
 N = 2
 
 d = dp.dictionary(debug=DEBUG)
-
-f = open("PLOMDATA","r")
+f = open(infile,"r")
 input = f.readlines()
 f.close()
 
