@@ -140,16 +140,21 @@ class dictionary:
 
             w.addPosition(i)
 
-    def associate(self, separator=" ", ttl=255):
+    def associate(self, separator=" ", startWord="", ttl=255):
         """
         Associate a sentence from the dictionary using separators.
         The ttl parameter is a limit for the number of iterations.
+        The startWord parameter provides an optional entry point.
         """
 
-        # we need a first word
         self.sentence = ""
 
-        w = choice(self.getWordsAtPosition(0))
+        # we need a first word
+        if startWord:
+            w = startWord
+        else:
+            w = choice(self.getWordsAtPosition(0))
+
         self.sentence += w
 
         for i in range(ttl):
