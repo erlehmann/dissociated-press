@@ -94,7 +94,8 @@ class dictionary:
     def dissociate(self, string, separator=" ", N=1):
         """
         Dissociate a sentence into this dictionary.
-        N tells how many words are fused back together.
+
+        N tells how many words are fused back together into a Fragment.
         """
 
         sentence = string.split(separator)
@@ -140,11 +141,14 @@ class dictionary:
 
             w.addPosition(i)
 
-    def associate(self, separator=" ", startWord="", ttl=255):
+    def associate(self, next=True, prev=False, separator=" ", startWord="", ttl=255):
         """
         Associate a sentence from the dictionary using separators.
-        The ttl parameter is a limit for the number of iterations.
+
+        The next and prev parameter control if next and previous fragments
+        are considered during the process of association.
         The startWord parameter provides an optional entry point.
+        The ttl parameter is a limit for the number of iterations.
         """
 
         self.sentence = ""
@@ -159,12 +163,21 @@ class dictionary:
 
         for i in range(ttl):
             if w:
-                # print self.sentence, w
-                try:
-                    w = self.words[w].getNextRandomFragment()
-                    if w: self.sentence += separator + w
-                except IndexError: # occurs when looking up an empty word
-                    pass
+
+                if prev:
+                    try:
+                        w = self.words[w].getPrevRandomFragment()
+                        if w: self.sentence = w + separator + self.sentence
+                    except IndexError: # occurs when looking up an empty word
+                        pass
+
+                if next:
+                    try:
+                        w = self.words[w].getNextRandomFragment()
+                        if w: self.sentence = self.sentence + separator + w
+                    except IndexError: # occurs when looking up an empty word
+                        pass
+
             else:
                 break
 
