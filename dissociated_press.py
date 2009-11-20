@@ -147,11 +147,11 @@ class dictionary:
 
         The next and prev parameter control if next and previous fragments
         are considered during the process of association.
+        WARNING: 
+
         The startWord parameter provides an optional entry point.
         The ttl parameter is a limit for the number of iterations.
         """
-
-        self.sentence = ""
 
         # we need a first word
         if startWord:
@@ -159,11 +159,11 @@ class dictionary:
         else:
             w = choice(self.getWordsAtPosition(0))
 
-        self.sentence += w
+        self.sentence = w
+        self.entryPoint = w
 
         for i in range(ttl):
             if w:
-
                 if prev:
                     try:
                         w = self.words[w].getPrevRandomFragment()
@@ -171,6 +171,10 @@ class dictionary:
                     except IndexError: # occurs when looking up an empty word
                         pass
 
+        w = self.entryPoint
+
+        for i in range(ttl):
+            if w:
                 if next:
                     try:
                         w = self.words[w].getNextRandomFragment()
