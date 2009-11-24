@@ -14,8 +14,9 @@ DEBUG = False
 N = 2
 
 d = dp.dictionary(debug=DEBUG)
+
 f = open(infile,"r")
-input = f.readlines()
+input = [x[:-1] for x in f.readlines() if x.endswith("\n")]
 f.close()
 
 for i, l in enumerate(input):
@@ -28,11 +29,6 @@ for i, l in enumerate(input):
 try:
     while 1:
         sentence = d.associate()
-
-        # fix line endings (why exactly does this occur ?)
-        if not sentence.endswith("\n"):
-            sentence = sentence + "\n"
-
         if sentence not in input:
             print sentence
             sleep(1)
