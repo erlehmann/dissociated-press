@@ -18,12 +18,14 @@
 
 import dissociated_press as dp
 from time import sleep
-from sys import argv
+from sys import argv, stderr, stdout
 
-if len(argv) == 1:
-    infile = "PLOMDATA"
-else:
+try:
     infile = argv[1]
+    amount = int(argv[2])
+except IndexError:
+    stderr.write("Usage: file-dissociate-py [infile] [amount]\n")
+    exit(1)
 
 DEBUG = False
 N = 2
@@ -39,14 +41,16 @@ for i, l in enumerate(input):
         print l
     d.dissociate(l, N=N)
     if i%100 == 0:
-        print i
+        stderr.write('.')
+
+stderr.write('\n')
 
 try:
-    while 1:
+    while amount > 0:
         sentence = d.associate()
         if sentence not in input:
-            print sentence
-            sleep(1)
+            stdout.write(sentence + '\n')
+            amount = amount - 1
 
 except KeyboardInterrupt:
     print "=== Enough! ==="
